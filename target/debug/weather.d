@@ -1,0 +1,1 @@
+/home/george/Documents/my_projects/rust/weather/target/debug/weather: /home/george/Documents/my_projects/rust/weather/src/location.rs /home/george/Documents/my_projects/rust/weather/src/main.rs /home/george/Documents/my_projects/rust/weather/src/weather.rs

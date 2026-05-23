@@ -1,0 +1,7 @@
+/home/george/Documents/my_projects/rust/weather/target/release/deps/weather-26dbe85f4ef55178.d: src/main.rs src/location.rs src/weather.rs
+
+/home/george/Documents/my_projects/rust/weather/target/release/deps/weather-26dbe85f4ef55178: src/main.rs src/location.rs src/weather.rs
+
+src/main.rs:
+src/location.rs:
+src/weather.rs:
