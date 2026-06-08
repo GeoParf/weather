@@ -38,3 +38,12 @@ chmod +x ~/.local/bin/weather
 
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc 
 source ~/.bashrc
+
+
+# Installation man page:
+
+sudo mkdir -p /usr/local/share/man/man1
+sudo cp weather.1 /usr/local/share/man/man1/
+sudo mandb
+
+man weather

@@ -1,99 +1,76 @@
-.TH WEATHER 1 "May 2026" "weather CLI" "User Commands"
+.TH WEATHER 1 "June 2026" "weather CLI" "User Commands"
 
 .SH NAME
-
-weather \- простая CLI утилита для просмотра погоды
-
-
+weather \- simple CLI tool for weather information (Open-Meteo)
 
 .SH SYNOPSIS
-
 .B weather
-
-[\fB--city\fR <город>]
-
+[\fB--city\fR <name>]
 [\fB--forecast\fR]
-
 [\fB--days\fR <1-7>]
-
-
+[\fB--f\fR]
+[\fB--c\fR]
 
 .SH DESCRIPTION
-
-Утилита показывает текущую погоду или прогноз на выбранное количество дней.
-
-Использует Open-Meteo API и не требует API ключей.
-
-
+The weather command displays current weather conditions or a multi-day forecast.
+It automatically detects your region and switches between Celsius/Fahrenheit and m/s/mph.
+Weather data is provided by the Open-Meteo API and requires no API keys.
 
 .SH OPTIONS
+.TP
+.B --city <name>
+Show weather for a specific city instead of using IP-based geolocation.
 
 .TP
-
-.B --city <город>
-
-Показать погоду для указанного города.
-
-
-
-.TP
-
 .B --forecast
-
-Показать прогноз погоды.
-
-
+Display a weather forecast instead of current conditions.
 
 .TP
-
 .B --days <1-7>
+Number of forecast days to display (default: 3).
 
-Количество дней прогноза (по умолчанию 3).
+.TP
+.B --f
+Force Fahrenheit temperature and mph wind speed.
 
+.TP
+.B --c
+Force Celsius temperature and m/s wind speed.
 
+.SH AUTOMATIC UNITS
+If no unit flags are provided, the tool automatically selects units based on region:
+.TP
+US, Liberia, Myanmar → Fahrenheit + mph
+.TP
+Rest of world → Celsius + m/s
 
 .SH EXAMPLES
-
 .TP
-
-Погода по IP:
-
+Current weather (auto-detected location):
 .B weather
 
-
-
 .TP
-
-Погода по городу:
-
+Weather for a city:
 .B weather --city "London"
 
-
-
 .TP
-
-Прогноз на 3 дня:
-
+3-day forecast:
 .B weather --forecast
 
-
-
 .TP
-
-Прогноз на 7 дней:
-
+7-day forecast:
 .B weather --forecast --days 7
 
+.TP
+Force Fahrenheit:
+.B weather --f
 
+.TP
+Force Celsius:
+.B weather --c
 
 .SH AUTHOR
-
-Георгий (GeoParf)
-
-
+Georgiy (GeoParf)
 
 .SH LICENSE
-
-GPL
-
-
+MIT
