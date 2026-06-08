@@ -1,1 +1,0 @@
-/home/george/Documents/my_projects/rust/wether/target/debug/wether: /home/george/Documents/my_projects/rust/wether/src/location.rs /home/george/Documents/my_projects/rust/wether/src/main.rs /home/george/Documents/my_projects/rust/wether/src/weather.rs

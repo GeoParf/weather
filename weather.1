@@ -1,0 +1,99 @@
+.TH WEATHER 1 "May 2026" "weather CLI" "User Commands"
+
+.SH NAME
+
+weather \- простая CLI утилита для просмотра погоды
+
+
+
+.SH SYNOPSIS
+
+.B weather
+
+[\fB--city\fR <город>]
+
+[\fB--forecast\fR]
+
+[\fB--days\fR <1-7>]
+
+
+
+.SH DESCRIPTION
+
+Утилита показывает текущую погоду или прогноз на выбранное количество дней.
+
+Использует Open-Meteo API и не требует API ключей.
+
+
+
+.SH OPTIONS
+
+.TP
+
+.B --city <город>
+
+Показать погоду для указанного города.
+
+
+
+.TP
+
+.B --forecast
+
+Показать прогноз погоды.
+
+
+
+.TP
+
+.B --days <1-7>
+
+Количество дней прогноза (по умолчанию 3).
+
+
+
+.SH EXAMPLES
+
+.TP
+
+Погода по IP:
+
+.B weather
+
+
+
+.TP
+
+Погода по городу:
+
+.B weather --city "London"
+
+
+
+.TP
+
+Прогноз на 3 дня:
+
+.B weather --forecast
+
+
+
+.TP
+
+Прогноз на 7 дней:
+
+.B weather --forecast --days 7
+
+
+
+.SH AUTHOR
+
+Георгий (GeoParf)
+
+
+
+.SH LICENSE
+
+GPL
+
+

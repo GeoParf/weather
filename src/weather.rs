@@ -1,43 +1,8 @@
+use anyhow::Result;
 use serde::Deserialize;
 
-//
-// --- Геокодинг города через Open‑Meteo ---
-//
-
 #[derive(Deserialize, Debug)]
-struct GeoResult {
-    latitude: f64,
-    longitude: f64,
-    name: String,
-}
-
-#[derive(Deserialize, Debug)]
-struct GeoResponse {
-    results: Option<Vec<GeoResult>>,
-}
-
-pub async fn geocode_city(city: &str) -> anyhow::Result<(f64, f64, String)> {
-    let url = format!(
-        "https://geocoding-api.open-meteo.com/v1/search?name={}&count=1",
-        city
-    );
-
-    let resp: GeoResponse = reqwest::get(&url).await?.json().await?;
-
-    let result = resp
-        .results
-        .and_then(|mut v| v.pop())
-        .ok_or_else(|| anyhow::anyhow!("Город '{}' не найден", city))?;
-
-    Ok((result.latitude, result.longitude, result.name))
-}
-
-//
-// --- Погода через Open‑Meteo ---
-//
-
-#[derive(Deserialize, Debug)]
-pub struct WeatherResponse {
+pub struct CurrentWeatherResponse {
     pub current: CurrentWeather,
 }
 
@@ -47,12 +12,78 @@ pub struct CurrentWeather {
     pub wind_speed_10m: f64,
 }
 
-pub async fn get_weather(lat: f64, lon: f64) -> anyhow::Result<WeatherResponse> {
+#[derive(Deserialize, Debug)]
+pub struct ForecastResponse {
+    pub daily: DailyForecast,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct DailyForecast {
+    pub time: Vec<String>,
+    pub temperature_2m_max: Vec<f64>,
+    pub temperature_2m_min: Vec<f64>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct GeocodeResponse {
+    pub results: Vec<GeocodeResult>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct GeocodeResult {
+    pub name: String,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub country_code: String,
+}
+
+pub struct GeoData {
+    pub name: String,
+    pub lat: f64,
+    pub lon: f64,
+    pub country_code: String,
+}
+
+pub async fn geocode_city(city: &str) -> Result<GeoData> {
     let url = format!(
-        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,wind_speed_10m",
+        "https://geocoding-api.open-meteo.com/v1/search?name={}&count=1&language=en&format=json",
+        city
+    );
+
+    let resp = reqwest::get(&url).await?;
+    let data: GeocodeResponse = resp.json().await?;
+
+    let first = data
+        .results
+        .get(0)
+        .ok_or_else(|| anyhow::anyhow!("City not found"))?;
+
+    Ok(GeoData {
+        name: first.name.clone(),
+        lat: first.latitude,
+        lon: first.longitude,
+        country_code: first.country_code.clone(),
+    })
+}
+
+pub async fn get_weather(lat: f64, lon: f64) -> Result<CurrentWeatherResponse> {
+    let url = format!(
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,wind_speed_10m&timezone=auto",
         lat, lon
     );
 
-    let resp = reqwest::get(&url).await?.json().await?;
-    Ok(resp)
+    let resp = reqwest::get(&url).await?;
+    let data: CurrentWeatherResponse = resp.json().await?;
+    Ok(data)
+}
+
+pub async fn get_forecast(lat: f64, lon: f64, days: u8) -> Result<ForecastResponse> {
+    let url = format!(
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&daily=temperature_2m_max,temperature_2m_min&forecast_days={}&timezone=auto",
+        lat, lon, days
+    );
+
+    let resp = reqwest::get(&url).await?;
+    let data: ForecastResponse = resp.json().await?;
+    Ok(data)
 }

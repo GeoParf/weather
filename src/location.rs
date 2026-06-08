@@ -1,23 +1,32 @@
+use anyhow::Result;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-struct IpInfo {
-    city: Option<String>,
-    loc: Option<String>,
+struct IpInfoResponse {
+    city: String,
+    country: String,
+    loc: String, // "lat,lon"
 }
 
-pub async fn get_location() -> anyhow::Result<(f64, f64, String)> {
-    let resp: IpInfo = reqwest::get("https://ipinfo.io/json").await?.json().await?;
+pub struct Location {
+    pub city: String,
+    pub country: String,
+    pub lat: f64,
+    pub lon: f64,
+}
 
-    let loc = resp
-        .loc
-        .ok_or_else(|| anyhow::anyhow!("Поле 'loc' отсутствует"))?;
-    let parts: Vec<&str> = loc.split(',').collect();
+pub async fn get_location() -> Result<Location> {
+    let resp = reqwest::get("https://ipinfo.io/json").await?;
+    let data: IpInfoResponse = resp.json().await?;
 
-    let lat = parts[0].parse::<f64>()?;
-    let lon = parts[1].parse::<f64>()?;
+    let parts: Vec<&str> = data.loc.split(',').collect();
+    let lat: f64 = parts[0].parse()?;
+    let lon: f64 = parts[1].parse()?;
 
-    let city = resp.city.unwrap_or("Unknown".into());
-
-    Ok((lat, lon, city))
+    Ok(Location {
+        city: data.city,
+        country: data.country,
+        lat,
+        lon,
+    })
 }

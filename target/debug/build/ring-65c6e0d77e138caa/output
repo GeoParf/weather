@@ -51,7 +51,7 @@ CFLAGS_x86_64_unknown_linux_gnu = None
 cargo:rerun-if-env-changed=CFLAGS_x86_64-unknown-linux-gnu
 CFLAGS_x86_64-unknown-linux-gnu = None
 cargo:rustc-link-lib=static=ring_core_0_17_14__test
-cargo:rustc-link-search=native=/home/george/Documents/my_projects/rust/wether/target/debug/build/ring-65c6e0d77e138caa/out
+cargo:rustc-link-search=native=/home/george/Documents/my_projects/rust/weather/target/debug/build/ring-65c6e0d77e138caa/out
 cargo:rerun-if-changed=crypto/perlasm/arm-xlate.pl
 cargo:rerun-if-changed=crypto/perlasm/x86gas.pl
 cargo:rerun-if-changed=crypto/perlasm/x86_64-xlate.pl
