@@ -21,8 +21,10 @@ pub struct ForecastResponse {
 #[derive(Deserialize, Debug)]
 pub struct DailyForecast {
     pub time: Vec<String>,
+    pub weather_code: Vec<u8>,
     pub temperature_2m_max: Vec<f64>,
     pub temperature_2m_min: Vec<f64>,
+    pub precipitation_sum: Vec<f64>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -104,7 +106,7 @@ pub fn weather_description(code: u8) -> (&'static str, &'static str) {
 
 pub async fn get_forecast(lat: f64, lon: f64, days: u8) -> Result<ForecastResponse> {
     let url = format!(
-        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&daily=temperature_2m_max,temperature_2m_min&forecast_days={}&timezone=auto",
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days={}&timezone=auto",
         lat, lon, days
     );
 

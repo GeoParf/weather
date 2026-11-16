@@ -76,15 +76,25 @@ async fn main() -> Result<()> {
         println!("Weather forecast for {} ({} days):", city_name, days);
 
         for i in 0..forecast.daily.time.len() {
+            let (icon, description) = weather::weather_description(forecast.daily.weather_code[i]);
+
             let t_min_c = forecast.daily.temperature_2m_min[i];
             let t_max_c = forecast.daily.temperature_2m_max[i];
 
             let t_min = if units == "F" { to_f(t_min_c) } else { t_min_c };
+
             let t_max = if units == "F" { to_f(t_max_c) } else { t_max_c };
 
             println!(
-                "{}: from {:.1}{} to {:.1}{}",
-                forecast.daily.time[i], t_min, unit_symbol, t_max, unit_symbol
+                "{} | {:.1}{} - {:.1}{} | precipitation: {:.1} mm | {} {} ",
+                forecast.daily.time[i],
+                t_min,
+                unit_symbol,
+                t_max,
+                unit_symbol,
+                forecast.daily.precipitation_sum[i],
+                icon,
+                description
             );
         }
 
