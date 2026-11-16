@@ -10,6 +10,7 @@ pub struct CurrentWeatherResponse {
 pub struct CurrentWeather {
     pub temperature_2m: f64,
     pub wind_speed_10m: f64,
+    pub weather_code: u8,
 }
 
 #[derive(Deserialize, Debug)]
@@ -68,13 +69,37 @@ pub async fn geocode_city(city: &str) -> Result<GeoData> {
 
 pub async fn get_weather(lat: f64, lon: f64) -> Result<CurrentWeatherResponse> {
     let url = format!(
-        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,wind_speed_10m&timezone=auto",
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=temperature_2m,wind_speed_10m,weather_code&timezone=auto",
         lat, lon
     );
 
     let resp = reqwest::get(&url).await?;
     let data: CurrentWeatherResponse = resp.json().await?;
     Ok(data)
+}
+
+pub fn weather_description(code: u8) -> (&'static str, &'static str) {
+    match code {
+        0 => ("☀️", "Sunny"),
+        1 | 2 => ("🌤️", "Partly Cloudy"),
+        3 => ("☁️", "Cloudy"),
+
+        45 | 48 => ("🌫️", "Fog"),
+
+        51 | 53 | 55 => ("🌦️", "Drizzle"),
+
+        61 | 63 | 65 => ("🌧️", "Rain"),
+
+        71 | 73 | 75 => ("❄️", "Snow"),
+
+        80 | 81 | 82 => ("🌦️", "Rain Showers"),
+
+        95 => ("⛈️", "Thunderstorm"),
+
+        96 | 99 => ("⛈️", "Thunderstorm with Hail"),
+
+        _ => ("❓", "Unknown"),
+    }
 }
 
 pub async fn get_forecast(lat: f64, lon: f64, days: u8) -> Result<ForecastResponse> {

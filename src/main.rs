@@ -110,5 +110,8 @@ async fn main() -> Result<()> {
 
     println!("Wind: {:.1} {}", wind, wind_unit);
 
+    let (icon, description) = weather::weather_description(current.current.weather_code);
+
+    println!("Condition: {} {}", icon, description);
     Ok(())
 }
